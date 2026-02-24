@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.repository.HospitalRepository;
 import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
+import nimblix.in.HealthCareHub.response.HospitalResponse;
 import nimblix.in.HealthCareHub.service.HospitalService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -34,5 +37,14 @@ public class HospitalServiceImpl implements HospitalService {
         hospitalRepository.save(hospital);
 
         return "Hospital Registered Successfully";
+    }
+
+    @Override
+    public HospitalResponse<Hospital> getTopRatedHospitals() {
+        List<Hospital> hospitals= hospitalRepository.findTop5ByOrderByRatingDesc();
+        HospitalResponse<Hospital> response=new HospitalResponse<>();
+        response.setHospitals(hospitals);
+        response.setMessage("Sucessfully fetched 5 top rated Hoapital objects");
+        return response;
     }
 }
