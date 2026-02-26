@@ -11,4 +11,6 @@ public interface HospitalService {
     String registerHospital(HospitalRegistrationRequest request);
 
     HospitalResponse<Hospital> getTopRatedHospitals();
+
+    HospitalResponse<Hospital> updateRating(Long id,Double rating);
 }

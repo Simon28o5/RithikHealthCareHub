@@ -9,5 +9,5 @@ import java.util.List;
 public class HospitalResponse<Hospital> {
 
     private String Message;
-    private List<Hospital> hospitals;
+    private Object object;
 }
