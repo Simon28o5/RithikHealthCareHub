@@ -5,63 +5,53 @@ import lombok.*;
 import nimblix.in.HealthCareHub.utility.HealthCareUtil;
 
 @Entity
-@Table(name = "doctors")
+@Table(name = "medicines")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Doctor {
+public class Medicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String medicineName;
 
-    private Long experienceYears;
-
-    private String phone;
-
-    @Column(unique = true)
-    private String emailId;
+    private String manufacturer;
 
     private String description;
 
-    private String password;
+    private String dosage; // e.g., 500mg, 10ml
 
-    private String qualification;
+    private Double price;
 
-    // ✅ Doctor login account
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // ✅ Many Doctors → One Hospital
-    @ManyToOne
-    @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospital;
+    private Integer stockQuantity;
 
     @Column(name = "is_active")
-    private  String isActive;
+    private String isActive; // ACTIVE / INACTIVE
 
-    // ✅ Many Doctors → One Specialization
+    // Optional: If medicine belongs to a hospital (pharmacy inside hospital)
     @ManyToOne
-    @JoinColumn(name = "specialization_id", nullable = false)
-    private Specialization specialization;
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 
+    @Column(name = "created_time", updatable = false)
     private String createdTime;
+
+    @Column(name = "updated_time")
     private String updatedTime;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         createdTime = HealthCareUtil.changeCurrentTimeToLocalDateFromGmtToISTInString();
         updatedTime = createdTime;
     }
 
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedTime = HealthCareUtil.changeCurrentTimeToLocalDateFromGmtToISTInString();
     }
 }

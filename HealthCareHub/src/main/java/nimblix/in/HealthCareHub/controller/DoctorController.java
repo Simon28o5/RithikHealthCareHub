@@ -6,12 +6,15 @@ import nimblix.in.HealthCareHub.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.PublicKey;
+
 
 @RestController
-@RequestMapping("api/doctors")
+@RequestMapping("/api/doctors")
 @RequiredArgsConstructor
 public class DoctorController {
 
@@ -23,14 +26,24 @@ public class DoctorController {
 
     }
 
-    @GetMapping("/getDoctorDetails")
-    public ResponseEntity<?> getDoctorDetails(@RequestParam Long  doctorId,@RequestParam Long  hospitalId){
-        return  doctorService.getDoctorDetails(doctorId,hospitalId);
+    @GetMapping("/getDoctorDetails/{doctorId}/{hospitalId}")
+    public ResponseEntity<?> getDoctorDetails(@PathVariable Long doctorId,
+                                              @PathVariable Long hospitalId) {
+        return doctorService.getDoctorDetails(doctorId, hospitalId);
+    }
 
+    @PutMapping("/updateDoctorDetails")
+     public String updateDoctorDetails(@RequestBody DoctorRegistrationRequest request){
+        return doctorService.updateDoctorDetails(request);
     }
 
 
 
+
+    @DeleteMapping("/deleteDoctorDetails")
+    public String deleteDoctorDetails(@RequestParam Long doctorId){
+        return doctorService.deleteDoctorDetails(doctorId);
+    }
 
 
 }
