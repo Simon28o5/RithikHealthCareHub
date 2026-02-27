@@ -7,16 +7,18 @@ import nimblix.in.HealthCareHub.repository.HospitalRepository;
 import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
 import nimblix.in.HealthCareHub.response.HospitalResponse;
 import nimblix.in.HealthCareHub.service.HospitalService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class HospitalServiceImpl implements HospitalService {
 
+    static Map<Long, List<Double>> ratingMap = new HashMap<>();
+
+    @Autowired
     private final HospitalRepository hospitalRepository;
 
     @Override
@@ -44,37 +46,38 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public HospitalResponse<Hospital> getTopRatedHospitals() {
-        List<Hospital> hospitals= hospitalRepository.findTop5ByOrderByRatingDesc();
-        HospitalResponse<Hospital> response=new HospitalResponse<>();
+        List<Hospital> hospitals = hospitalRepository.findTop5ByOrderByRatingDesc();
+        HospitalResponse<Hospital> response = new HospitalResponse<>();
         response.setObject(hospitals);
         response.setMessage(HealthCareConstants.SUCESSS_MESSAGE);
         return response;
     }
 
     @Override
-    public HospitalResponse<Hospital> updateRating(Long id,Double rating) {
-        List<Double> ratingList=new ArrayList<>();
-        Optional<Hospital> hosp=hospitalRepository.findById(id);
+    public HospitalResponse<Hospital> updateRating(Long id, Double rating) {
 
-        HospitalResponse<Hospital> response =new HospitalResponse<>();
-        if(hosp.isPresent()){
-            Hospital h=hosp.get();
-            response.setMessage(HealthCareConstants.SUCESSS_MESSAGE);
-//            if it is first Review
-            if(ratingList.isEmpty()){
-                ratingList.add(rating);
-                h.setRating(rating);
-            }
-//            if review already exists
-            else {
-                ratingList.add(rating);
-                double avg = ratingList.stream().mapToDouble(Double::doubleValue).average().orElseThrow(() ->new RuntimeException(HealthCareConstants.NO_REVIEWS_SUBMITTED));
-                h.setRating(avg);
-            }
+        Optional<Hospital> hosp = hospitalRepository.findById(id);
 
-            response.setObject(h);
+        HospitalResponse<Hospital> response = new HospitalResponse<>();
+
+        if (hosp.isEmpty()) {
+            response.setMessage(HealthCareConstants.NO_HOSPITAL_FOUND);
+            return response;
+        } else {
+            Hospital h = hosp.get();
+
+            if (!ratingMap.containsKey(id))
+                ratingMap.put(id, new ArrayList<>());
+
+            ratingMap.get(id).add(rating);
+            double avg = ratingMap.get(id).stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            h.setRating(avg);
             hospitalRepository.save(h);
+
+            response.setMessage(HealthCareConstants.REVIEWS_SUBMITTED);
+            response.setObject(h);
+
+            return response;
         }
-        return response;
     }
 }

@@ -14,7 +14,7 @@ public class HealthCareConstants {
     public static final String ADMIN ="ADMIN";
     public static final String TEACHER ="TEACHER" ;
     public static final String SUCESSS_MESSAGE = "Successfully fetched 5 top rated Hospital objects";
-    public static final String NO_REVIEWS_SUBMITTED = "No reviews submitted";
+    public static final String REVIEWS_SUBMITTED = "REVIEW SUBMITTED SUCCESSFULLY";
     public static String ROLE_MISMATCH ="Role mismatch" ;
     public static String PAID = "PAID";
     public static String SUBSCRIPTION_ACTIVATED_SUCCESSFULLY ="Subscription activated successfully" ;
@@ -40,4 +40,5 @@ public class HealthCareConstants {
     public static final String PRESENT = "PRESENT";
     public static final String ABSENT = "ABSENT";
     public static final String TARDY = "TARDY";
+    public static final String NO_HOSPITAL_FOUND = "HOSPITAL ID NOT FOUND";
 }
